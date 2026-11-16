@@ -513,9 +513,6 @@
   const tick = () => ($("#clock").textContent = fmt.format(new Date()));
   tick(); setInterval(tick, 15000);
   const toast = (m) => { const t = $("#toast"); t.textContent = m; t.classList.add("show"); clearTimeout(toast.h); toast.h = setTimeout(() => t.classList.remove("show"), 1800); };
-  $("#copyEmail").addEventListener("click", async () => {
-    try { await navigator.clipboard.writeText(PROFILE.email); toast("Email copied"); } catch (e) { toast(PROFILE.email); }
-  });
 
   /* ===================== Smooth scroll ===================== */
   let lenis = null;
@@ -669,7 +666,7 @@ void main(){
       const top = live.data?.repos?.[0];
       return [tline(`<span class="out">${top ? `building <span style="color:var(--emerald)">${esc(projByRepo[top.name.toLowerCase()]?.title || top.name)}</span> · last push ${ago(top.pushed_at)}` : "see github.com/AashutoshR"}</span>`)];
     },
-    contact: () => { navigator.clipboard?.writeText(PROFILE.email).catch(() => {}); return [tline(`<span class="k">email</span><span class="out">${esc(PROFILE.email)} (copied)</span>`), tline(`<span class="k">linkedin</span><span class="out">${esc(PROFILE.linkedin)}</span>`), tline(`<span class="k">github</span><span class="out">${esc(LINKS.github)}</span>`)]; },
+    contact: () => { return [tline(`<span class="k">email</span><span class="out"><a href="${esc(LINKS.mailto)}">${esc(PROFILE.email)}</a></span>`), tline(`<span class="k">linkedin</span><span class="out">${esc(PROFILE.linkedin)}</span>`), tline(`<span class="k">github</span><span class="out">${esc(LINKS.github)}</span>`)]; },
     resume: () => { open(LINKS.resume, "_blank", "noopener"); return [tline(`<span class="out">opening resume...</span>`, "ok")]; },
     github: () => { open(LINKS.github, "_blank", "noopener"); return [tline(`<span class="out">opening github...</span>`, "ok")]; },
     linkedin: () => { open(LINKS.linkedin, "_blank", "noopener"); return [tline(`<span class="out">opening linkedin...</span>`, "ok")]; },
@@ -678,7 +675,7 @@ void main(){
     ls: () => [tline(`<span class="out">work/  about/  experience/  activity/  skills/  contact/</span>`)],
     sudo: () => [tline(`<span class="out">nice try. permission granted only after an interview.</span>`)],
   };
-  COMMANDS.email = COMMANDS.contact; COMMANDS.cv = COMMANDS.resume; COMMANDS.cd = (a) => { if (a && $("#" + a.replace(/[^a-z]/gi, ""))) { goTo("#" + a.replace(/[^a-z]/gi, "")); return [tline(`<span class="out">cd ${esc(a)}</span>`, "ok")]; } return COMMANDS.ls(); };
+  COMMANDS.email = () => { location.href = LINKS.mailto; return [tline(`<span class="out">opening your email app...</span>`, "ok")]; }; COMMANDS.cv = COMMANDS.resume; COMMANDS.cd = (a) => { if (a && $("#" + a.replace(/[^a-z]/gi, ""))) { goTo("#" + a.replace(/[^a-z]/gi, "")); return [tline(`<span class="out">cd ${esc(a)}</span>`, "ok")]; } return COMMANDS.ls(); };
   termForm.addEventListener("submit", (e) => {
     e.preventDefault();
     const raw = termCmd.value.trim();
@@ -703,7 +700,7 @@ void main(){
     ...[["Work", "#work", "16 projects"], ["About", "#about", "Who I am"], ["Experience", "#experience", "Wipro, 3 years"], ["Activity", "#activity", "Live GitHub"], ["Skills", "#skills", "The toolbox"], ["Contact", "#contact", "Get in touch"], ["Top of page", "#top", "Home"]]
       .map(([l, h, d]) => ({ g: "Go to", label: l, hint: d, ic: icon("hash"), run: () => goTo(h) })),
     ...projects.map((p) => ({ g: "Projects", label: p.title, hint: p.domain || "", ic: techIcon(p.icon || p.tech[0]), run: () => openDrawer(p, $("#kOpen")) })),
-    { g: "Actions", label: "Copy email address", hint: PROFILE.email, ic: icon("copy"), run: () => { navigator.clipboard?.writeText(PROFILE.email).then(() => toast("Email copied"), () => toast(PROFILE.email)); } },
+    { g: "Actions", label: "Email me", hint: PROFILE.email, ic: icon("mail"), run: () => { location.href = LINKS.mailto; } },
     { g: "Actions", label: "Open resume", hint: "PDF", ic: icon("file"), run: () => open(LINKS.resume, "_blank", "noopener") },
     { g: "Actions", label: "GitHub", hint: "@AashutoshR", ic: icon("github"), run: () => open(LINKS.github, "_blank", "noopener") },
     { g: "Actions", label: "LinkedIn", hint: "aashutosh-rawate", ic: icon("linkedin"), run: () => open(LINKS.linkedin, "_blank", "noopener") },
