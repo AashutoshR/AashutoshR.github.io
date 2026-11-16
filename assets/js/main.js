@@ -272,8 +272,10 @@
   const CACHE = "gh-live-v3";
   const readCache = () => { try { return JSON.parse(localStorage.getItem(CACHE) || "null"); } catch (e) { return null; } };
   const writeCache = (d) => { try { localStorage.setItem(CACHE, JSON.stringify(d)); } catch (e) {} };
-  async function gh(path) {
+  async function gh(path, retry = true) {
     const r = await fetch(`https://api.github.com${path}`, { headers: { Accept: "application/vnd.github+json" } });
+    // GitHub occasionally returns a transient 422/5xx on busy repos; one quick retry smooths that over.
+    if (!r.ok && retry && (r.status === 422 || r.status >= 500)) { await new Promise((ok) => setTimeout(ok, 700)); return gh(path, false); }
     if (!r.ok) throw new Error(`GitHub ${r.status}`);
     return r.json();
   }
