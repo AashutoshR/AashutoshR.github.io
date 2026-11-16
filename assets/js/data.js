@@ -94,6 +94,10 @@ const TECH = {
   "Shell": { d: "bash/bash-original.svg", mono: true },
   "PowerShell": { d: "powershell/powershell-original.svg" },
   "TeX": { d: "latex/latex-original.svg", mono: true },
+  "Agile (Scrum)": { m: "Ag", c: "FF4A1C" },
+  "Code Review": { m: "CR", c: "2B2A27" },
+  "TDD": { m: "TD", c: "3E8E5E" },
+  "Technical Docs": { m: "Dc", c: "6F6A61" },
   "Go": { d: "go/go-original.svg" },
   "C++": { d: "cplusplus/cplusplus-original.svg" },
   "Rust": { d: "rust/rust-original.svg", mono: true },
@@ -110,6 +114,11 @@ const PROFILE = {
     "Full Stack Developer",
   ],
   location: "Glasgow, UK",
+  timezone: "Europe/London",
+  intro:
+    "Software engineer who builds backend systems that stay up under load, and machine learning that shows its work.",
+  statement:
+    "I care about software you can trust at 2am: services that keep their promises under load, pipelines that deploy in minutes, and models that can explain where every number came from.",
   email: "enaashutoshrawate1999@gmail.com",
   linkedin: "https://www.linkedin.com/in/aashutosh-rawate-2494721b6/",
   resume: "assets/Aashutosh_Rawate_CV.pdf",
@@ -201,12 +210,16 @@ const SKILLS = [
   { group: "Data & Messaging", items: ["PostgreSQL", "MySQL", "SQL Server", "SQLite", "Elasticsearch", "Redis", "Kafka", "Keycloak"] },
   { group: "Data & ML", items: ["PyTorch", "TensorFlow", "Scikit-learn", "Pandas", "NumPy", "Apache Spark", "Dask", "Hugging Face", "LangChain", "CUDA"] },
   { group: "Testing", items: ["JUnit", "Mockito", "PyTest", "Postman", "Testcontainers"] },
+  { group: "Ways of working", items: ["Agile (Scrum)", "Code Review", "TDD", "Technical Docs", "IntelliJ IDEA", "VS Code"] },
 ];
 
-/* Featured order = array order. `kind` drives the card artwork colour, `icon` the big logo. */
+/* Order = display order. `featured` projects get the large stacked showcase (needs a `shot` screenshot).
+   `kind` drives the colour, `icon` the big logo used when there is no screenshot. */
 const PROJECTS = [
   {
     repo: "inference-engine",
+    shot: "assets/img/work/inference-engine.png",
+    year: 2026,
     icon: "CUDA",
     title: "Inference Engine",
     tagline: "LLM server built from scratch",
@@ -219,6 +232,8 @@ const PROJECTS = [
   },
   {
     repo: "ledgerflow",
+    shot: "assets/img/work/ledgerflow.png",
+    year: 2026,
     icon: "Spring Boot",
     title: "LedgerFlow Studio",
     tagline: "Workspace + simulated payments",
@@ -232,6 +247,8 @@ const PROJECTS = [
   },
   {
     repo: "mags",
+    shot: "assets/img/work/mags.jpg",
+    year: 2026,
     icon: "React",
     private: true,
     title: "MAGS",
@@ -246,6 +263,8 @@ const PROJECTS = [
   },
   {
     repo: "rag-financial",
+    shot: "assets/img/work/rag-financial.png",
+    year: 2026,
     icon: "Claude",
     title: "Auditable Financial RAG",
     tagline: "M.Sc. capstone",
@@ -258,6 +277,8 @@ const PROJECTS = [
   },
   {
     repo: "LocalVoice",
+    shot: "assets/img/work/localvoice.png",
+    year: 2026,
     icon: "Hugging Face",
     title: "LocalVoice",
     tagline: "Whisper fine-tuning workbench",
@@ -269,30 +290,34 @@ const PROJECTS = [
     tech: ["Python", "PyTorch", "Hugging Face", "CUDA", "FastAPI", "JavaScript"],
   },
   {
-    repo: "deepfake-detector",
-    icon: "PyTorch",
-    title: "Deepfake Detector",
-    tagline: "Cross-dataset ViT detection",
-    kind: "ml",
-    featured: true,
-    description:
-      "A Vision Transformer (ViT-B/16) trained on FaceForensics++ and built to keep catching fakes from datasets and generators it never saw, with calibrated scores, robustness tests and a local web demo.",
-    highlight: "0.928 AUC on text-to-image fakes never seen in training",
-    tech: ["Python", "PyTorch", "Hugging Face", "FastAPI", "LaTeX"],
-  },
-  {
     repo: "docqa-rag",
+    shot: "assets/img/work/docqa.jpg",
+    year: 2026,
     icon: "LangChain",
     title: "DocQA",
     tagline: "Cited answers from your documents",
     kind: "ai",
+    featured: true,
     description:
       "Upload books, articles or papers and ask questions. Answers come only from retrieved, reranked passages, with a page citation after every claim and an honest refusal when the documents do not cover it.",
     highlight: "Refused 4 of 4 unanswerable questions, 0 of 34 wrongly refused",
     tech: ["Python", "FastAPI", "LangChain", "Pinecone", "Groq", "Docker"],
   },
   {
+    repo: "deepfake-detector",
+    year: 2026,
+    icon: "PyTorch",
+    title: "Deepfake Detector",
+    tagline: "Cross-dataset ViT detection",
+    kind: "ml",
+    description:
+      "A Vision Transformer (ViT-B/16) trained on FaceForensics++ and built to keep catching fakes from datasets and generators it never saw, with calibrated scores, robustness tests and a local web demo.",
+    highlight: "0.928 AUC on text-to-image fakes never seen in training",
+    tech: ["Python", "PyTorch", "Hugging Face", "FastAPI", "LaTeX"],
+  },
+  {
     repo: "nutrilens",
+    year: 2026,
     icon: "FastAPI",
     title: "NutriLens",
     tagline: "Meal photo to nutrition",
@@ -304,6 +329,7 @@ const PROJECTS = [
   },
   {
     repo: "docweave",
+    year: 2026,
     icon: "Git",
     title: "DocWeave",
     tagline: "Docs that know when they are stale",
@@ -315,6 +341,7 @@ const PROJECTS = [
   },
   {
     repo: "lenslore",
+    year: 2026,
     icon: "Streamlit",
     title: "LensLore",
     tagline: "Ask anything about an image",
@@ -326,6 +353,7 @@ const PROJECTS = [
   },
   {
     title: "Near-RT RIC Malicious Traffic Detection",
+    year: 2025,
     icon: "TensorFlow",
     tagline: "O-RAN research",
     kind: "research",
@@ -336,6 +364,7 @@ const PROJECTS = [
   },
   {
     repo: "CloudComputinginZARR",
+    year: 2025,
     icon: "Dask",
     title: "Cloud-Native Data Layouts",
     tagline: "M.Sc. dissertation",
@@ -347,6 +376,7 @@ const PROJECTS = [
   },
   {
     repo: "BigDataApache",
+    year: 2025,
     icon: "Apache Spark",
     title: "Financial Asset Recommender",
     tagline: "Distributed Spark ranking",
@@ -358,6 +388,7 @@ const PROJECTS = [
   },
   {
     repo: "vantage",
+    year: 2026,
     icon: "Linux",
     title: "Vantage for Linux",
     tagline: "ACPI tuning utility",
@@ -369,6 +400,7 @@ const PROJECTS = [
   },
   {
     repo: "Reddit-Data-Analysis",
+    year: 2025,
     icon: "Jupyter",
     title: "Reddit Data Analysis",
     tagline: "Sentiment & text mining",
@@ -380,6 +412,7 @@ const PROJECTS = [
   },
   {
     repo: "CarCompany",
+    year: 2020,
     icon: "PHP",
     title: "Car Company Website",
     tagline: "Early full-stack work",

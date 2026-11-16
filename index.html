@@ -1,155 +1,229 @@
 <!doctype html>
-<html lang="en" data-theme="dark">
+<html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Aashutosh Rawate | Software Engineer</title>
-  <meta name="description" content="Aashutosh Rawate: software engineer building resilient backend services, distributed systems and ML systems. Java, Spring Boot, NestJS, Python, PyTorch." />
-  <meta name="theme-color" content="#08080b" />
+  <meta name="description" content="Aashutosh Rawate: software engineer building backend systems that stay up under load, and machine learning that shows its work. Java, Spring Boot, NestJS, Python, PyTorch." />
+  <meta name="theme-color" content="#efebe3" />
   <meta property="og:title" content="Aashutosh Rawate | Software Engineer" />
-  <meta property="og:description" content="Backend, distributed systems and ML systems. Projects, experience and contact." />
+  <meta property="og:description" content="Backend, distributed systems and ML systems. Selected work, live GitHub activity, experience and contact." />
   <meta property="og:image" content="https://aashutoshr.github.io/assets/og.png" />
+  <meta property="og:url" content="https://aashutoshr.github.io/" />
   <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary_large_image" />
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300..800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="assets/css/styles.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300..700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="preload" as="image" href="assets/img/aashutosh.jpg" />
+  <link rel="stylesheet" href="assets/css/site.css" />
   <script>
     document.documentElement.classList.add("js");
-    try { const t = localStorage.getItem("theme"); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
+    try { if (sessionStorage.getItem("seen-intro")) document.documentElement.classList.add("no-intro"); } catch (e) {}
   </script>
 </head>
 <body>
-  <canvas id="sky" aria-hidden="true"></canvas>
-  <div class="aurora" aria-hidden="true"><span></span><span></span><span></span></div>
+  <!-- Intro -->
+  <div class="loader" aria-hidden="true">
+    <div class="loader-name"><span>Aashutosh</span><em>Rawate</em></div>
+    <div class="loader-meta"><span>Portfolio</span><span>©<span class="yr"></span></span></div>
+    <div class="loader-count"><span id="loaderCount">000</span></div>
+    <div class="loader-bar"><span></span></div>
+  </div>
+
+  <div class="progress" aria-hidden="true"><span></span></div>
+  <div class="cursor" aria-hidden="true"><span class="cursor-dot"></span><span class="cursor-ring"><span class="cursor-label"></span></span></div>
   <div class="grain" aria-hidden="true"></div>
 
-  <a class="status-pill" href="#contact"><span class="pulse"></span>Open to Work</a>
+  <!-- Header -->
+  <header class="header">
+    <a href="#top" class="brand magnetic" aria-label="Back to top">
+      <span class="brand-mark">AR</span>
+      <span class="brand-text">Aashutosh Rawate<small>Software Engineer</small></span>
+    </a>
+    <div class="clock" aria-label="Local time in Glasgow"><span class="live-dot"></span><span>Glasgow</span><span id="clock">--:--:--</span></div>
+    <nav class="nav" aria-label="Primary">
+      <a href="#work" class="roll"><span data-text="Work">Work</span></a>
+      <a href="#live" class="roll"><span data-text="Live">Live</span></a>
+      <a href="#experience" class="roll"><span data-text="Experience">Experience</span></a>
+      <a href="#about" class="roll"><span data-text="About">About</span></a>
+      <a href="#contact" class="btn-pill magnetic"><span>Let's talk</span><i class="arrow">↗</i></a>
+    </nav>
+    <button class="menu-btn" type="button" aria-expanded="false" aria-controls="menu"><span></span><span></span><b>Menu</b></button>
+  </header>
 
-  <main>
+  <div class="menu" id="menu" hidden>
+    <nav>
+      <a href="#work"><i>01</i>Work</a>
+      <a href="#live"><i>02</i>Live</a>
+      <a href="#experience"><i>03</i>Experience</a>
+      <a href="#about"><i>04</i>About</a>
+      <a href="#contact"><i>05</i>Contact</a>
+    </nav>
+    <div class="menu-foot">
+      <a data-href="mailto" data-bind="email"></a>
+      <div class="menu-socials"><a data-href="github" target="_blank" rel="noopener">GitHub</a><a data-href="linkedin" target="_blank" rel="noopener">LinkedIn</a><a data-href="resume" target="_blank" rel="noopener">Resume</a></div>
+    </div>
+  </div>
+
+  <main id="top">
     <!-- HERO -->
-    <section id="home" class="hero">
-      <div class="avatar-wrap reveal">
-        <div class="avatar-ring"></div>
-        <img class="avatar" src="assets/avatar.svg" alt="Aashutosh Rawate" width="160" height="160" />
+    <section class="hero">
+      <canvas class="signal" aria-hidden="true"></canvas>
+      <div class="hero-top">
+        <p class="eyebrow"><span class="live-dot"></span>Available for software engineering roles</p>
+        <p class="eyebrow right">Based in Glasgow, UK<br />Working worldwide</p>
       </div>
-      <p class="eyebrow reveal" data-delay="1"><span data-icon="pin"></span><span data-bind="location"></span></p>
-      <h1 class="name reveal" data-delay="2">Aashutosh Rawate</h1>
-      <p class="role reveal" data-delay="3"><span id="typed"></span><span class="caret"></span></p>
-      <p class="summary reveal" data-delay="4" data-bind="summary"></p>
-      <div class="cta reveal" data-delay="5">
-        <a class="btn btn-primary" href="#projects">View My Work <span data-icon="arrowDown"></span></a>
-        <a class="btn btn-ghost" data-href="resume" target="_blank" rel="noopener"><span data-icon="file"></span> Resume</a>
+
+      <h1 class="hero-title">
+        <span class="line"><span class="word">Aashutosh</span></span>
+        <span class="line second">
+          <span class="portrait" data-cursor="Hello">
+            <img src="assets/img/aashutosh.jpg" alt="Portrait of Aashutosh Rawate" width="413" height="531" />
+          </span>
+          <span class="word italic">Rawate</span>
+        </span>
+      </h1>
+
+      <div class="hero-bottom">
+        <p class="hero-intro" data-bind="intro"></p>
+        <div class="hero-now">
+          <span class="label">Right now on GitHub</span>
+          <a class="now-link" id="heroNow" data-href="github" target="_blank" rel="noopener">
+            <span class="now-repo">Fetching latest commit</span>
+            <span class="now-msg">Live from github.com/AashutoshR</span>
+          </a>
+        </div>
+        <a href="#work" class="badge-spin magnetic" aria-label="See selected work" data-cursor="Scroll">
+          <svg viewBox="0 0 200 200" aria-hidden="true">
+            <defs><path id="circlePath" d="M100,100 m-78,0 a78,78 0 1,1 156,0 a78,78 0 1,1 -156,0" /></defs>
+            <text><textPath href="#circlePath">Open to work · Software engineer · Glasgow · </textPath></text>
+          </svg>
+          <span class="badge-arrow">↓</span>
+        </a>
       </div>
-      <div class="socials reveal" data-delay="6">
-        <a data-href="github" target="_blank" rel="noopener" aria-label="GitHub"><span data-icon="github"></span></a>
-        <a data-href="linkedin" target="_blank" rel="noopener" aria-label="LinkedIn"><span data-icon="linkedin"></span></a>
-        <a data-href="mailto" aria-label="Email"><span data-icon="mail"></span></a>
-      </div>
-      <a href="#about" class="scroll-cue" aria-label="Scroll to About"><span data-icon="arrowDown"></span></a>
     </section>
 
-    <!-- ABOUT -->
-    <section id="about" class="section">
-      <h2 class="section-title reveal">About Me</h2>
-      <div class="about-grid">
-        <div class="about-text reveal" id="aboutText"></div>
-        <div class="about-side">
-          <div class="card stats reveal" id="stats"></div>
-          <div class="card now reveal" data-delay="1">
-            <h3 class="card-title"><span class="pulse"></span>Recently on GitHub</h3>
-            <ul id="activity" class="activity"><li class="muted">Loading live activity...</li></ul>
-            <a class="link-arrow" data-href="github" target="_blank" rel="noopener">See everything on GitHub <span data-icon="arrowRight"></span></a>
+    <!-- MARQUEE -->
+    <section class="bands" aria-label="Technologies">
+      <div class="band band-a"><div class="band-track" id="bandA"></div></div>
+      <div class="band band-b"><div class="band-track" id="bandB"></div></div>
+    </section>
+
+    <!-- STATEMENT -->
+    <section class="statement" id="about">
+      <div class="section-tag"><span>(01)</span><span>About</span></div>
+      <p class="statement-text" data-bind="statement"></p>
+      <div class="facts" id="facts"></div>
+      <div class="about-cols">
+        <div class="about-text" id="aboutText"></div>
+        <div class="about-card">
+          <span class="label">Education</span>
+          <div id="eduList"></div>
+          <a class="text-link" data-href="resume" target="_blank" rel="noopener">Download the full resume <i class="arrow">↗</i></a>
+        </div>
+      </div>
+    </section>
+
+    <!-- WORK -->
+    <section class="work" id="work">
+      <div class="work-head">
+        <div class="section-tag light"><span>(02)</span><span>Selected work</span></div>
+        <h2 class="display">Things I've <em>built</em></h2>
+        <p class="work-sub">Six projects I would walk you through first. Real screenshots, real numbers.</p>
+      </div>
+      <div class="stack" id="stack"></div>
+
+      <div class="archive">
+        <div class="archive-head">
+          <h3 class="display small">The <em>archive</em></h3>
+          <div class="tabs" id="tabs" role="tablist" aria-label="Filter projects"></div>
+        </div>
+        <ol class="rows" id="rows"></ol>
+      </div>
+      <div class="hover-preview" aria-hidden="true"><div class="hp-inner"></div></div>
+    </section>
+
+    <!-- LIVE -->
+    <section class="live" id="live">
+      <div class="section-tag"><span>(03)</span><span>Live from GitHub</span></div>
+      <div class="live-head">
+        <h2 class="display">Always <em>shipping</em></h2>
+        <p class="live-status"><span class="live-dot"></span><span id="syncState">Connecting to GitHub</span></p>
+      </div>
+      <div class="live-grid">
+        <div class="panel heat-panel">
+          <div class="panel-head">
+            <span class="label">Contributions, last 12 months</span>
+            <span class="big-num"><span id="contribTotal">0</span></span>
           </div>
+          <div class="heat-wrap"><div class="heat" id="heat"></div></div>
+          <div class="heat-legend"><span>Less</span><i data-l="0"></i><i data-l="1"></i><i data-l="2"></i><i data-l="3"></i><i data-l="4"></i><span>More</span></div>
+          <div class="mini-stats" id="miniStats"></div>
+        </div>
+        <div class="panel feed-panel">
+          <div class="panel-head">
+            <span class="label">Latest commits</span>
+            <a class="text-link small" data-href="github" target="_blank" rel="noopener">Profile <i class="arrow">↗</i></a>
+          </div>
+          <ol class="feed" id="feed"><li class="feed-empty">Loading commits</li></ol>
         </div>
       </div>
     </section>
 
     <!-- EXPERIENCE -->
-    <section id="experience" class="section">
-      <h2 class="section-title reveal">Experience</h2>
-      <ol class="timeline" id="timeline"></ol>
-    </section>
-
-    <!-- SKILLS -->
-    <section id="skills" class="section">
-      <h2 class="section-title reveal">Skills &amp; Technologies</h2>
-      <div id="skillGroups" class="skill-groups"></div>
-    </section>
-
-    <!-- PROJECTS -->
-    <section id="projects" class="section">
-      <h2 class="section-title reveal">Projects</h2>
-      <p class="section-sub reveal">Synced live with GitHub. Pick technologies to filter.</p>
-      <div class="filter reveal">
-        <div class="search">
-          <span data-icon="search"></span>
-          <input id="search" type="search" placeholder="Search projects or technologies..." autocomplete="off" />
-          <button id="clearFilters" class="clear" type="button" hidden>Clear</button>
-        </div>
-        <div id="techFilters" class="tech-filters"></div>
+    <section class="experience" id="experience">
+      <div class="exp-side">
+        <div class="section-tag"><span>(04)</span><span>Experience</span></div>
+        <h2 class="display">Three years<br />in <em>production</em></h2>
+        <p class="exp-note">Wipro, India. Payments, insurance and a platform serving 8,000+ people a day.</p>
+        <div class="exp-progress"><span></span></div>
       </div>
-      <div id="projectGrid" class="project-grid"></div>
-      <p id="emptyState" class="muted center" hidden>No projects match that filter.</p>
-      <div class="center">
-        <button id="toggleAll" class="btn btn-primary" type="button">View All Projects <span data-icon="arrowRight"></span></button>
-      </div>
+      <ol class="exp-list" id="expList"></ol>
     </section>
 
-    <!-- EDUCATION -->
-    <section id="education" class="section">
-      <h2 class="section-title reveal">Education</h2>
-      <div id="eduGrid" class="edu-grid"></div>
-    </section>
-
-    <!-- CONTACT -->
-    <section id="contact" class="section">
-      <h2 class="section-title reveal">Let's Connect</h2>
-      <p class="section-sub reveal">Open to software engineering roles. Reach out for opportunities, collaborations or just a chat.</p>
-      <div class="contact-grid">
-        <a class="card contact reveal" data-href="mailto" id="emailCard">
-          <span class="contact-icon"><span data-icon="mail"></span></span>
-          <h3>Email</h3><p>Drop me a message</p><code data-bind="email"></code>
-          <span class="copy-hint">Click to email, or copy below</span>
-        </a>
-        <a class="card contact reveal" data-delay="1" data-href="github" target="_blank" rel="noopener">
-          <span class="contact-icon"><span data-icon="github"></span></span>
-          <h3>GitHub</h3><p>Check out my code</p><code>@<span data-bind="github"></span></code>
-        </a>
-        <a class="card contact reveal" data-delay="2" data-href="linkedin" target="_blank" rel="noopener">
-          <span class="contact-icon"><span data-icon="linkedin"></span></span>
-          <h3>LinkedIn</h3><p>Let's network</p><code>Connect with me</code>
-        </a>
-        <a class="card contact reveal" data-delay="3" data-href="resume" target="_blank" rel="noopener">
-          <span class="contact-icon"><span data-icon="file"></span></span>
-          <h3>Resume</h3><p>The full story</p><code>Download PDF</code>
-        </a>
-      </div>
-      <div class="center"><button class="btn btn-ghost small" id="copyEmail" type="button"><span data-icon="copy"></span> <span>Copy email address</span></button></div>
+    <!-- TOOLBOX -->
+    <section class="toolbox">
+      <div class="section-tag"><span>(05)</span><span>Toolbox</span></div>
+      <h2 class="display">The <em>stack</em></h2>
+      <div class="tool-grid" id="toolGrid"></div>
     </section>
   </main>
 
-  <footer class="footer">
-    <p>&copy; <span id="year"></span> Aashutosh Rawate. Built by hand, hosted on GitHub Pages.</p>
+  <!-- CONTACT -->
+  <footer class="contact" id="contact">
+    <div class="section-tag light"><span>(06)</span><span>Contact</span></div>
+    <h2 class="contact-title" aria-label="Let's build something that lasts">
+      <span class="ct-line">Let's build</span>
+      <span class="ct-line"><em>something</em> that lasts.</span>
+    </h2>
+    <div class="contact-row">
+      <a class="mail" data-href="mailto" data-cursor="Write"><span data-bind="email"></span></a>
+      <button class="copy-btn" type="button" id="copyEmail" data-cursor="Copy">Copy email</button>
+    </div>
+    <div class="contact-grid">
+      <div><span class="label">Socials</span>
+        <a data-href="github" target="_blank" rel="noopener" class="roll"><span data-text="GitHub">GitHub</span></a>
+        <a data-href="linkedin" target="_blank" rel="noopener" class="roll"><span data-text="LinkedIn">LinkedIn</span></a>
+      </div>
+      <div><span class="label">Resume</span>
+        <a data-href="resume" target="_blank" rel="noopener" class="roll"><span data-text="Download PDF">Download PDF</span></a>
+      </div>
+      <div><span class="label">Local time</span><span id="clock2">--:--</span></div>
+      <div><span class="label">Made by</span><span>©<span class="yr"></span> Aashutosh Rawate</span></div>
+    </div>
+    <a href="#top" class="to-top magnetic" aria-label="Back to top" data-cursor="Top">↑</a>
+    <div class="giant" aria-hidden="true">Rawate</div>
   </footer>
 
-  <!-- DOCK -->
-  <nav class="dock" aria-label="Sections">
-    <a href="#home" data-tip="Home"><span data-icon="home"></span></a>
-    <a href="#about" data-tip="About"><span data-icon="user"></span></a>
-    <a href="#experience" data-tip="Experience"><span data-icon="briefcase"></span></a>
-    <a href="#projects" data-tip="Projects"><span data-icon="layers"></span></a>
-    <a href="#education" data-tip="Education"><span data-icon="cap"></span></a>
-    <a href="#contact" data-tip="Contact"><span data-icon="mail"></span></a>
-    <span class="dock-sep"></span>
-    <a data-href="resume" target="_blank" rel="noopener" data-tip="Resume"><span data-icon="file"></span></a>
-    <button type="button" id="themeToggle" data-tip="Theme" aria-label="Toggle theme"><span data-icon="moon"></span></button>
-  </nav>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-  <div id="toast" class="toast" role="status" aria-live="polite"></div>
-
-  <script src="assets/js/data.js"></script>
-  <script src="assets/js/app.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js" integrity="sha384-HOvlOYPIs/zjoIkWUGXkVmXsjr8GuZLV+Q+rcPwmJOVZVpvTSXQChiN4t9Euv9Vc" crossorigin="anonymous" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js" integrity="sha384-P8VzCVnT9NBUkMrpcIZrJbA7EBjJvh/fJS6PmP+4nLIM284DtsImIv8D0fFjIkeh" crossorigin="anonymous" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/SplitText.min.js" integrity="sha384-xb96EMJeax+NLXMC88ZBa1xAeAW+kn+horHh/zFlbMLG2UPWhMJJSlv7fi57hS+Q" crossorigin="anonymous" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/lenis@1.3.4/dist/lenis.min.js" integrity="sha384-FKTX0CNJ8ngN1oGMBReVu7mvjTJyjFiD5etb1NKnYxc+8eFI2O0KWnksTN+oTFcu" crossorigin="anonymous" defer></script>
+  <script src="assets/js/data.js" defer></script>
+  <script src="assets/js/main.js" defer></script>
 </body>
 </html>
