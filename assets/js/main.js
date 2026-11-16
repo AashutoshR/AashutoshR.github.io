@@ -8,24 +8,40 @@
   const safeUrl = (u) => (/^https?:\/\//i.test(u || "") ? u : null);
   const root = document.documentElement;
   const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const fine = matchMedia("(hover: hover) and (pointer: fine)").matches;
-  const hasGsap = !!(window.gsap && window.ScrollTrigger);
-  const motion = hasGsap && !reduce;
-  if (!motion) root.classList.add("no-motion");
-
-  const pad2 = (n) => String(n).padStart(2, "0");
   const ago = (iso, short) => {
     const s = Math.max(0, (Date.now() - new Date(iso).getTime()) / 1000);
-    const units = [["y", "year", 31536000], ["mo", "month", 2592000], ["w", "week", 604800], ["d", "day", 86400], ["h", "hour", 3600], ["m", "minute", 60]];
-    for (const [a, b, v] of units) if (s >= v) { const k = Math.floor(s / v); return short ? `${k}${a}` : `${k} ${b}${k > 1 ? "s" : ""} ago`; }
-    return short ? "now" : "just now";
+    const u = [["y", "year", 31536000], ["mo", "month", 2592000], ["w", "week", 604800], ["d", "day", 86400], ["h", "hour", 3600], ["m", "minute", 60]];
+    for (const [a, b, v] of u) if (s >= v) { const k = Math.floor(s / v); return short ? `${k}${a} ago` : `${k} ${b}${k > 1 ? "s" : ""} ago`; }
+    return "just now";
   };
+
+  /* UI icons (Lucide, ISC licence) */
+  const ICONS = {
+    arrowRight: '<path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>',
+    download: '<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/>',
+    github: '<path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-8-2"/>',
+    linkedin: '<path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/>',
+    mail: '<rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>',
+    file: '<path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/>',
+    copy: '<rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>',
+    pin: '<path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/>',
+    clock: '<circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>',
+    x: '<path d="M18 6 6 18"/><path d="m6 6 12 12"/>',
+    menu: '<path d="M4 7h16"/><path d="M4 12h16"/><path d="M4 17h16"/>',
+    chevron: '<path d="m6 9 6 6 6-6"/>',
+    external: '<path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>',
+    globe: '<circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/>',
+    cap: '<path d="M21.42 10.922a1 1 0 0 0-.019-1.838L12.83 5.18a2 2 0 0 0-1.66 0L2.6 9.08a1 1 0 0 0 0 1.832l8.57 3.908a2 2 0 0 0 1.66 0z"/><path d="M22 10v6"/><path d="M6 12.5V16a6 3 0 0 0 12 0v-3.5"/>',
+    lock: '<rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>',
+  };
+  const icon = (n) => `<svg class="i" viewBox="0 0 24 24" aria-hidden="true">${ICONS[n] || ""}</svg>`;
+  const paintIcons = (r = document) => $$("[data-icon]", r).forEach((el) => (el.outerHTML = icon(el.dataset.icon)));
 
   function techIcon(name) {
     const t = TECH[name];
     if (!t) {
       const m = String(name || "?").replace(/[^A-Za-z0-9]/g, "").slice(0, 2) || "?";
-      return `<span class="ti mg" style="--c:#6b675f" aria-hidden="true">${esc(m)}</span>`;
+      return `<span class="ti mg" style="--c:#5c6470" aria-hidden="true">${esc(m)}</span>`;
     }
     if (t.d) return `<img class="ti${t.mono ? " mono" : ""}" src="${DEVICON}${t.d}" alt="" loading="lazy" decoding="async" width="16" height="16" />`;
     if (t.s) return `<span class="ti si" style="--c:#${t.c};--u:url('${SIMPLE}${t.s}.svg')" aria-hidden="true"></span>`;
@@ -33,240 +49,158 @@
   }
   const chip = (t) => `<span class="chip">${techIcon(t)}${esc(t)}</span>`;
 
-  const KIND = {
-    ml: { label: "ML Systems", c: ["#ff4a1c", "#ffb547"] },
-    ai: { label: "AI Apps", c: ["#c38bff", "#ff4a1c"] },
-    web: { label: "Full Stack", c: ["#4fb8ff", "#8a7dff"] },
-    data: { label: "Data", c: ["#ffb547", "#ff6b8b"] },
-    tool: { label: "Tooling", c: ["#5fd3a0", "#4fb8ff"] },
-    research: { label: "Research", c: ["#9b8cff", "#ffb547"] },
-  };
-  const kindOf = (p) => KIND[p.kind] || KIND.tool;
+  const KIND = { ml: "ML Systems", ai: "AI Apps", web: "Full Stack", data: "Data", tool: "Tooling", research: "Research" };
 
-  /* ===================== Static bindings ===================== */
+  /* ===================== Bindings ===================== */
   const LINKS = { github: `https://github.com/${PROFILE.github}`, linkedin: PROFILE.linkedin, mailto: `mailto:${PROFILE.email}`, resume: PROFILE.resume };
   $$("[data-href]").forEach((a) => (a.href = LINKS[a.dataset.href]));
   $$("[data-bind]").forEach((el) => (el.textContent = PROFILE[el.dataset.bind] ?? ""));
   $$(".yr").forEach((el) => (el.textContent = new Date().getFullYear()));
+  paintIcons();
 
-  /* ===================== Marquee bands ===================== */
-  const bandA = ["Distributed systems", "Microservices", "ML systems", "APIs that stay up", "GPU inference", "Retrieval you can audit", "CI/CD in minutes", "Data pipelines"];
-  const bandB = ["Java", "Spring Boot", "NestJS", "Python", "PyTorch", "TypeScript", "React", "Kafka", "Redis", "Kubernetes", "Docker", "PostgreSQL", "Elasticsearch", "AWS", "CUDA", "FastAPI"];
-  const twice = (html) => html + html;
-  $("#bandA").innerHTML = twice(bandA.map((w) => `<span class="band-item">${esc(w)}<span class="star">✳</span></span>`).join(""));
-  $("#bandB").innerHTML = twice(bandB.map((w) => `<span class="band-item">${techIcon(w)}${esc(w)}</span>`).join(""));
+  /* ===================== Logo strip ===================== */
+  const stripTech = ["Java", "Spring Boot", "NestJS", "TypeScript", "Python", "PyTorch", "React", "Node.js", "Kafka", "Redis", "PostgreSQL", "Elasticsearch", "Docker", "Kubernetes", "AWS", "FastAPI", "GitHub Actions", "CUDA"];
+  const strip = stripTech.map((t) => `<span class="strip-item">${techIcon(t)}${esc(t)}</span>`).join("");
+  $("#strip").innerHTML = strip + strip;
 
   /* ===================== About ===================== */
-  const st = $(".statement-text");
-  st.innerHTML = PROFILE.statement.split(/\s+/).map((w) => `<span class="w">${esc(w)}</span>`).join(" ");
-  $("#facts").innerHTML = PROFILE.stats.map((s) =>
-    `<div class="fact"><div class="fact-num"><span class="count" data-to="${s.value}">${s.value.toLocaleString("en-GB")}</span><sup>${esc(s.suffix)}</sup></div><span class="label">${esc(s.label)}</span></div>`).join("");
   $("#aboutText").innerHTML = PROFILE.about.map((p) => `<p>${esc(p)}</p>`).join("");
-  $("#eduList").innerHTML = EDUCATION.map((e) => `
-    <div class="edu-item">
-      <span class="meta">${esc(e.period)} · ${esc(e.where)}</span>
-      <h4>${esc(e.school)}</h4>
-      <p>${esc(e.degree)} <span class="grade">(${esc(e.grade)})</span></p>
+  $("#stats").innerHTML = PROFILE.stats.map((s, i) =>
+    `<div class="card stat rv" style="--d:${i}"><b><span class="num" data-to="${s.value}">${s.value.toLocaleString("en-GB")}</span><em>${esc(s.suffix)}</em></b><span>${esc(s.label)}</span></div>`).join("");
+  $("#edu").innerHTML = EDUCATION.map((e, i) => `
+    <div class="card edu-card rv" style="--d:${i + 2}">
+      <span class="edu-ico">${icon("cap")}</span>
+      <div><h4>${esc(e.school)}</h4><p>${esc(e.degree)} (${esc(e.grade)})</p><p>${esc(e.period)}</p></div>
     </div>`).join("");
 
-  /* ===================== Featured stack ===================== */
-  const featured = PROJECTS.filter((p) => p.featured && p.shot);
-  const repoUrl = (p) => (p.repo && !p.private ? `https://github.com/${PROFILE.github}/${p.repo}` : null);
-  $("#stack").innerHTML = featured.map((p, i) => {
-    const k = kindOf(p);
-    const code = repoUrl(p);
-    const host = p.demo ? new URL(p.demo).host : code ? `github.com/${PROFILE.github}/${p.repo}` : "";
-    return `<article class="shot-card" style="--k1:${k.c[0]};--k2:${k.c[1]}">
-      <div class="sc-info">
-        <div class="sc-top"><span><b>${pad2(i + 1)}</b> / ${pad2(featured.length)}</span><span>${esc(k.label)} · ${esc(p.year || "")}</span></div>
-        <h3 class="sc-title">${esc(p.title)}</h3>
-        <p class="sc-tag">${esc(p.tagline || "")}</p>
-        <p class="sc-desc">${esc(p.description)}</p>
-        ${p.highlight ? `<p class="sc-metric">${esc(p.highlight)}</p>` : ""}
-        <div class="chips">${p.tech.slice(0, 7).map(chip).join("")}</div>
-        <div class="sc-links">
-          ${p.demo ? `<a class="btn-line solid" href="${esc(p.demo)}" target="_blank" rel="noopener" data-cursor="Visit">Live site <i class="arrow">↗</i></a>` : ""}
-          ${code ? `<a class="btn-line" href="${code}" target="_blank" rel="noopener" data-cursor="Code">Source <i class="arrow">↗</i></a>` : `<span class="btn-line" style="opacity:.6">Private repository</span>`}
-        </div>
-      </div>
-      <a class="sc-media" href="${esc(p.demo || code || "#work")}" target="_blank" rel="noopener" data-cursor="${p.demo ? "Visit" : "Code"}" aria-label="Open ${esc(p.title)}">
-        <div class="sc-bar"><i></i><i></i><i></i><span>${esc(host)}</span></div>
-        <div class="sc-img"><img src="${esc(p.shot)}" alt="Screenshot of ${esc(p.title)}" loading="lazy" decoding="async" /></div>
-      </a>
-    </article>`;
-  }).join("");
+  /* ===================== Experience ===================== */
+  const SHOW = 4;
+  $("#timeline").innerHTML = EXPERIENCE.map((x) => `
+    <li class="job rv">
+      <div class="job-when">${esc(x.period)}<b>${esc(x.company)}, ${esc(x.where)}</b></div>
+      <article class="card job-card">
+        <h3>${esc(x.team)}</h3>
+        <p class="role">${esc(x.role)}</p>
+        <ul class="job-points">${x.points.map((p, j) => `<li${j >= SHOW ? " hidden" : ""}>${esc(p)}</li>`).join("")}</ul>
+        ${x.points.length > SHOW ? `<button class="more-btn" type="button">Show ${x.points.length - SHOW} more ${icon("chevron")}</button>` : ""}
+        <div class="chips">${x.tech.map(chip).join("")}</div>
+      </article>
+    </li>`).join("");
+  $$(".more-btn").forEach((b) => b.addEventListener("click", () => {
+    $$(".job-points li[hidden]", b.parentElement).forEach((li) => (li.hidden = false));
+    b.remove();
+  }));
 
-  /* ===================== Archive ===================== */
-  let archive = PROJECTS.filter((p) => !(p.featured && p.shot));
-  let activeKind = "all";
-  const art = (p) => {
-    const k = kindOf(p);
-    if (p.shot) return `<img src="${esc(p.shot)}" alt="" />`;
-    return `<div class="art" style="--k1:${k.c[0]};--k2:${k.c[1]}"><div class="art-logo">${techIcon(p.icon || p.tech[0])}</div><span class="art-name">${esc(p.title)}</span></div>`;
-  };
+  /* ===================== Skills ===================== */
+  $("#skillsGrid").innerHTML = SKILLS.map((g, i) => `
+    <div class="card skill rv" style="--d:${i % 2}"><h3>${esc(g.group)}</h3><div class="chips">${g.items.map(chip).join("")}</div></div>`).join("");
+
+  /* ===================== Projects ===================== */
+  let projects = PROJECTS.slice();
+  let kind = "all";
+  const repoUrl = (p) => (p.repo && !p.private ? `https://github.com/${PROFILE.github}/${p.repo}` : null);
+  const cover = (p, big) => p.shot
+    ? `<img src="${esc(p.shot)}" alt="Screenshot of ${esc(p.title)}" loading="lazy" decoding="async" />`
+    : `<div class="gen"><div class="gen-main">${techIcon(p.icon || p.tech[0])}</div>${big ? "" : `<div class="gen-side">${p.tech.filter((t) => t !== (p.icon || p.tech[0])).slice(0, 3).map((t) => `<span>${techIcon(t)}</span>`).join("")}</div>`}</div>`;
 
   function renderTabs() {
-    const counts = archive.reduce((m, p) => ((m[p.kind] = (m[p.kind] || 0) + 1), m), {});
-    const kinds = Object.keys(KIND).filter((k) => counts[k]);
-    $("#tabs").innerHTML = [`<button class="tab" role="tab" data-kind="all" aria-selected="${activeKind === "all"}">All<sup>${archive.length}</sup></button>`]
-      .concat(kinds.map((k) => `<button class="tab" role="tab" data-kind="${k}" aria-selected="${activeKind === k}">${KIND[k].label}<sup>${counts[k]}</sup></button>`)).join("");
+    const counts = projects.reduce((m, p) => ((m[p.kind] = (m[p.kind] || 0) + 1), m), {});
+    $("#tabs").innerHTML = [["all", "All", projects.length], ...Object.keys(KIND).filter((k) => counts[k]).map((k) => [k, KIND[k], counts[k]])]
+      .map(([k, label, n]) => `<button class="tab" role="tab" type="button" data-kind="${k}" aria-selected="${kind === k}">${label}<small>${n}</small></button>`).join("");
+    $("#countBadge").textContent = projects.length;
+    $("#projCount").textContent = projects.length;
   }
-  function renderRows() {
-    const list = archive.filter((p) => activeKind === "all" || p.kind === activeKind);
-    $("#rows").innerHTML = list.map((p, i) => {
+
+  function renderGrid() {
+    const list = projects.filter((p) => kind === "all" || p.kind === kind);
+    $("#grid").innerHTML = list.map((p) => {
+      const i = projects.indexOf(p);
       const code = repoUrl(p);
-      return `<li class="row" data-i="${archive.indexOf(p)}">
-        <button class="row-head" type="button" aria-expanded="false" data-cursor="Open">
-          <span class="r-num">${pad2(i + 1)}</span>
-          <span class="r-title">${esc(p.title)}${p.discovered ? `<span class="r-new">New</span>` : ""}</span>
-          <span class="r-tag">${esc(p.tagline || "")}</span>
-          <span class="r-icons">${p.tech.slice(0, 3).map(techIcon).join("")}</span>
-          <span class="r-year">${esc(p.year || "")}</span>
-          <span class="r-plus" aria-hidden="true">+</span>
-        </button>
-        <div class="row-body"><div><div class="rb-inner">
-          <span></span>
-          <div>
-            ${p.highlight ? `<div class="rb-metric">${esc(p.highlight)}</div>` : ""}
-            <p>${esc(p.description || "")}</p>
-            <div class="sc-links">
-              ${p.demo ? `<a class="btn-line solid" href="${esc(p.demo)}" target="_blank" rel="noopener">Live site <i class="arrow">↗</i></a>` : ""}
-              ${code ? `<a class="btn-line" href="${code}" target="_blank" rel="noopener">Source <i class="arrow">↗</i></a>` : !p.repo ? `<span class="btn-line" style="opacity:.6">Research project</span>` : ""}
+      const more = p.tech.length - 4;
+      return `<article class="card p-card rv" data-i="${i}">
+        <div class="p-cover">
+          <div class="p-badges">
+            <span class="badge${p.discovered ? " new" : ""}">${p.discovered ? "New" : esc(KIND[p.kind] || "Project")}</span>
+            ${p.demo ? `<span class="badge live">${icon("globe")}Live</span>` : p.private ? `<span class="badge">${icon("lock")}Private</span>` : ""}
+          </div>
+          ${cover(p)}
+        </div>
+        <div class="p-body">
+          <div class="p-title"><h3>${esc(p.title)}</h3><span>${esc(p.year || "")}</span></div>
+          <p class="p-tag">${esc(p.tagline || "")}</p>
+          <p class="p-desc">${esc(p.description || "")}</p>
+          <div class="chips">${p.tech.slice(0, 4).map(chip).join("")}${more > 0 ? `<span class="chip more">+${more}</span>` : ""}</div>
+          <div class="p-foot">
+            <button class="details" type="button" data-open="${i}">View details ${icon("arrowRight")}</button>
+            <div class="p-links">
+              ${p.demo ? `<a href="${esc(p.demo)}" target="_blank" rel="noopener" aria-label="Open ${esc(p.title)} live site">${icon("external")}</a>` : ""}
+              ${code ? `<a href="${code}" target="_blank" rel="noopener" aria-label="${esc(p.title)} source on GitHub">${icon("github")}</a>` : ""}
             </div>
           </div>
-          <div class="chips">${p.tech.map(chip).join("")}</div>
-        </div></div></div>
-      </li>`;
+        </div>
+      </article>`;
     }).join("");
-    if (motion) gsap.from("#rows .row", { opacity: 0, y: 24, duration: 0.7, stagger: 0.04, ease: "power3.out", clearProps: "all" });
+    $("#empty").hidden = list.length > 0;
+    observe($("#grid"));
   }
+
   $("#tabs").addEventListener("click", (e) => {
     const b = e.target.closest(".tab");
     if (!b) return;
-    activeKind = b.dataset.kind;
-    renderTabs(); renderRows();
-    if (window.ScrollTrigger) ScrollTrigger.refresh();
+    kind = b.dataset.kind;
+    renderTabs(); renderGrid();
   });
-  $("#rows").addEventListener("click", (e) => {
-    const h = e.target.closest(".row-head");
-    if (!h) return;
-    const row = h.parentElement;
-    const open = !row.classList.contains("open");
-    $$("#rows .row.open").forEach((r) => { r.classList.remove("open"); $(".row-head", r).setAttribute("aria-expanded", "false"); });
-    row.classList.toggle("open", open);
-    h.setAttribute("aria-expanded", open);
-    setTimeout(() => window.ScrollTrigger && ScrollTrigger.refresh(), 650);
+  $("#grid").addEventListener("click", (e) => {
+    if (e.target.closest(".p-links a")) return;
+    const card = e.target.closest(".p-card");
+    if (card) openDrawer(projects[+card.dataset.i], card);
   });
-  renderTabs(); renderRows();
 
-  /* ===================== Experience + toolbox ===================== */
-  $("#expList").innerHTML = EXPERIENCE.map((x) => `
-    <li class="exp-item">
-      <div class="exp-meta"><span><b>●</b> ${esc(x.company)} · ${esc(x.where)}</span><span>${esc(x.period)}</span></div>
-      <h3>${esc(x.team)}</h3>
-      <h4>${esc(x.role)}</h4>
-      <ul class="exp-points">${x.points.map((p) => `<li>${esc(p)}</li>`).join("")}</ul>
-      <div class="chips">${x.tech.map(chip).join("")}</div>
-    </li>`).join("");
-  $("#toolGrid").innerHTML = SKILLS.map((g) => `
-    <div class="tool-cat"><span class="label">${esc(g.group)}</span>
-      <ul>${g.items.map((t) => `<li>${techIcon(t)}<span>${esc(t)}</span></li>`).join("")}</ul>
-    </div>`).join("");
+  /* Drawer */
+  const drawer = $("#drawer"), backdrop = $("#backdrop");
+  let lastFocus = null;
+  function openDrawer(p, from) {
+    if (!p) return;
+    lastFocus = from;
+    const code = repoUrl(p);
+    $("#dKind").textContent = `${KIND[p.kind] || "Project"} · ${p.year || ""}`;
+    $("#dBody").innerHTML = `
+      <div class="d-cover">${cover(p, true)}</div>
+      <h3 id="dTitle">${esc(p.title)}</h3>
+      <p class="d-tag">${esc(p.tagline || "")}</p>
+      <p class="d-desc">${esc(p.description || "")}</p>
+      ${p.highlight ? `<div class="d-metric"><span>Key result</span><b>${esc(p.highlight)}</b></div>` : ""}
+      <span class="d-label">Built with</span>
+      <div class="chips">${p.tech.map(chip).join("")}</div>
+      <div class="d-actions">
+        ${p.demo ? `<a class="btn btn-accent" href="${esc(p.demo)}" target="_blank" rel="noopener">${icon("external")}Open live site</a>` : ""}
+        ${code ? `<a class="btn btn-outline" href="${code}" target="_blank" rel="noopener">${icon("github")}View source</a>` : ""}
+        ${p.private ? `<span class="btn btn-outline" aria-disabled="true">${icon("lock")}Private repository</span>` : ""}
+        ${!p.repo ? `<span class="btn btn-outline" aria-disabled="true">Research project, no public repo</span>` : ""}
+      </div>`;
+    $("#dBody").scrollTop = 0;
+    drawer.classList.add("open"); backdrop.classList.add("open");
+    drawer.setAttribute("aria-hidden", "false");
+    root.style.overflow = "hidden"; lenis && lenis.stop();
+    setTimeout(() => $("#dClose").focus(), 50);
+  }
+  function closeDrawer() {
+    if (!drawer.classList.contains("open")) return;
+    drawer.classList.remove("open"); backdrop.classList.remove("open");
+    drawer.setAttribute("aria-hidden", "true");
+    root.style.overflow = ""; lenis && lenis.start();
+    lastFocus && $(".details", lastFocus)?.focus({ preventScroll: true });
+  }
+  $("#dClose").addEventListener("click", closeDrawer);
+  backdrop.addEventListener("click", closeDrawer);
+  addEventListener("keydown", (e) => { if (e.key === "Escape") { closeDrawer(); setSheet(false); } });
 
-  /* ===================== Clock ===================== */
-  const fmt = new Intl.DateTimeFormat("en-GB", { timeZone: PROFILE.timezone || "Europe/London", hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false });
-  const tick = () => {
-    const t = fmt.format(new Date());
-    $("#clock").textContent = t;
-    $("#clock2").textContent = `${t.slice(0, 5)} in Glasgow`;
-  };
-  tick(); setInterval(tick, 1000);
-
-  /* ===================== Live GitHub ===================== */
+  /* ===================== Live GitHub activity ===================== */
   const projByRepo = Object.fromEntries(PROJECTS.filter((p) => p.repo).map((p) => [p.repo.toLowerCase(), p]));
   const excluded = new Set(EXCLUDE.map((e) => e.toLowerCase()));
   const repoIcon = (name, lang) => { const p = projByRepo[name.toLowerCase()]; return techIcon(p ? p.icon || p.tech[0] : lang || "Git"); };
-  const repoTitle = (name) => { const p = projByRepo[name.toLowerCase()]; return p ? p.title : name; };
-  const live = { commits: new Map(), shown: new Set(), synced: 0, mode: "", snapshot: null, langs: {} };
-
-  function renderHeat(days) {
-    if (!days || !days.length) return;
-    const max = Math.max(1, ...days.map((d) => d[1]));
-    const offset = new Date(days[0][0] + "T00:00:00Z").getUTCDay();
-    const today = new Date().toISOString().slice(0, 10);
-    const cells = Array.from({ length: offset }, () => `<i style="visibility:hidden"></i>`);
-    for (const [date, n] of days) {
-      const l = n === 0 ? 0 : Math.min(4, Math.ceil((n / max) * 4));
-      cells.push(`<i data-l="${l}"${date === today ? ' class="today"' : ""} title="${n} contribution${n === 1 ? "" : "s"} on ${date}"></i>`);
-    }
-    $("#heat").innerHTML = cells.join("");
-    // stats
-    let longest = 0, run = 0, best = days[0];
-    for (const d of days) { run = d[1] > 0 ? run + 1 : 0; longest = Math.max(longest, run); if (d[1] > best[1]) best = d; }
-    let current = 0;
-    for (let i = days.length - 1; i >= 0; i--) { if (days[i][1] > 0) current++; else if (i === days.length - 1) continue; else break; }
-    const active = days.filter((d) => d[1] > 0).length;
-    const bestDate = new Date(best[0] + "T00:00:00Z").toLocaleDateString("en-GB", { day: "numeric", month: "short", timeZone: "UTC" });
-    $("#miniStats").innerHTML = [
-      [active, "Active days"], [longest, "Longest streak"], [current, "Current streak"], [best[1], `Busiest day, ${bestDate}`],
-    ].map(([v, l]) => `<div><b>${v}</b><span class="label">${esc(l)}</span></div>`).join("");
-    const heatCells = $$("#heat i");
-    if (motion) {
-      gsap.from(heatCells, { scale: 0, opacity: 0, duration: 0.5, ease: "back.out(2)", stagger: { amount: 1.1, from: "start" }, scrollTrigger: { trigger: "#heat", start: "top 85%", once: true } });
-    }
-  }
-
-  function setTotal(n) {
-    const el = $("#contribTotal");
-    if (!motion) return (el.textContent = n);
-    const o = { v: 0 };
-    gsap.to(o, { v: n, duration: 1.8, ease: "power3.out", onUpdate: () => (el.textContent = Math.round(o.v)), scrollTrigger: { trigger: el, start: "top 90%", once: true } });
-  }
-
-  function renderFeed() {
-    const list = [...live.commits.values()].sort((a, b) => b.date.localeCompare(a.date)).slice(0, 8);
-    if (!list.length) return;
-    const firstRender = live.shown.size === 0;
-    $("#feed").innerHTML = list.map((c) => {
-      const fresh = !firstRender && !live.shown.has(c.sha);
-      return `<li${fresh ? ' class="fresh"' : ""}>
-        <span class="when" title="${esc(new Date(c.date).toLocaleString("en-GB"))}">${ago(c.date, true)}</span>
-        <div>
-          <span class="repo">${repoIcon(c.repo)}${esc(c.repo)}</span>
-          <a class="msg" href="${esc(safeUrl(c.url) || LINKS.github)}" target="_blank" rel="noopener">${esc(c.message)}<span class="sha">${esc(c.sha)}</span></a>
-        </div>
-      </li>`;
-    }).join("");
-    list.forEach((c) => live.shown.add(c.sha));
-    const top = list[0];
-    $("#heroNow").href = safeUrl(top.url) || LINKS.github;
-    $("#heroNow").innerHTML = `<span class="now-repo">${repoIcon(top.repo)}${esc(repoTitle(top.repo))} · ${ago(top.date)}</span><span class="now-msg">“${esc(top.message)}”</span>`;
-  }
-
-  function addCommits(arr) { arr.forEach((c) => c && c.sha && live.commits.set(c.sha, c)); }
-
-  function setSync() {
-    const el = $("#syncState");
-    if (!live.synced) return;
-    el.textContent = live.mode === "live"
-      ? `Live · synced ${ago(new Date(live.synced).toISOString())}`
-      : `Snapshot · updated ${ago(new Date(live.synced).toISOString())}`;
-  }
-  setInterval(setSync, 5000);
-
-  async function loadSnapshot() {
-    try {
-      const r = await fetch("data/github.json", { cache: "no-cache" });
-      if (!r.ok) throw 0;
-      const d = await r.json();
-      live.snapshot = d;
-      renderHeat(d.days);
-      setTotal(d.totalContributions || 0);
-      addCommits(d.commits || []);
-      renderFeed();
-      if (!live.mode) { live.mode = "snapshot"; live.synced = new Date(d.updatedAt || Date.now()).getTime(); setSync(); }
-    } catch (e) { /* the live API below still works */ }
-  }
+  const repoTitle = (name) => projByRepo[name.toLowerCase()]?.title || name;
+  const live = { shown: new Set(), synced: 0, repos: [] };
 
   async function gh(path) {
     const r = await fetch(`https://api.github.com${path}`, { headers: { Accept: "application/vnd.github+json" } });
@@ -274,28 +208,81 @@
     return r.json();
   }
 
-  async function loadLive() {
-    try {
-      const repos = (await gh(`/users/${PROFILE.github}/repos?per_page=100&sort=pushed`))
-        .filter((r) => !r.fork && !excluded.has(r.name.toLowerCase()));
-      discover(repos);
-      const top = repos.slice(0, 4);
-      const batches = await Promise.all(top.map((r) =>
-        gh(`/repos/${PROFILE.github}/${r.name}/commits?per_page=5`).then((cs) => cs.map((c) => ({
-          repo: r.name, sha: c.sha.slice(0, 7), message: (c.commit.message || "").split("\n")[0],
-          date: c.commit.committer?.date || c.commit.author?.date, url: c.html_url,
-        }))).catch(() => [])));
-      addCommits(batches.flat());
-      live.mode = "live"; live.synced = Date.now();
-      renderFeed(); setSync();
-    } catch (e) {
-      if (!live.mode) $("#syncState").textContent = "GitHub is busy · showing snapshot";
+  function renderActivity(repos, commits) {
+    // currently building
+    const top = repos[0];
+    if (top) {
+      const p = projByRepo[top.name.toLowerCase()];
+      $("#bIco").innerHTML = repoIcon(top.name, top.language);
+      $("#bTitle").textContent = p ? p.title : top.name;
+      $("#bDesc").textContent = (p && p.description) || top.description || "A project in progress.";
+      $("#bMeta").textContent = `Last push ${ago(top.pushed_at)} · ${top.language || "Code"}`;
+      $("#bLink").href = top.html_url;
     }
+    // feed
+    const list = commits.slice(0, 8);
+    if (!list.length) return;
+    const first = live.shown.size === 0;
+    $("#feed").innerHTML = list.map((c) => `
+      <li${!first && !live.shown.has(c.sha) ? ' class="fresh"' : ""}>
+        <span class="f-ico">${repoIcon(c.repo)}</span>
+        <div><span class="f-repo">${esc(c.repo)}</span><a class="f-msg" href="${esc(safeUrl(c.url) || LINKS.github)}" target="_blank" rel="noopener" title="${esc(c.message)}">${esc(c.message)}</a></div>
+        <time datetime="${esc(c.date)}">${ago(c.date, true)}</time>
+      </li>`).join("");
+    list.forEach((c) => live.shown.add(c.sha));
+    // hero card
+    const c = list[0];
+    $("#commitCard").href = safeUrl(c.url) || LINKS.github;
+    $("#ccRepo").innerHTML = `${repoIcon(c.repo)}${esc(repoTitle(c.repo))}`;
+    $("#ccMsg").textContent = c.message;
+    $("#ccWhen").textContent = ago(c.date);
+  }
+
+  const setSync = () => { if (live.synced) $("#syncState").textContent = `Live from GitHub · synced ${ago(new Date(live.synced).toISOString())}`; };
+  setInterval(setSync, 5000);
+
+  // Results are cached for 3 minutes so reloads and tab hopping do not burn GitHub's 60 requests/hour limit.
+  const CACHE = "gh-live-v3";
+  const readCache = () => { try { return JSON.parse(localStorage.getItem(CACHE) || "null"); } catch (e) { return null; } };
+  const writeCache = (d) => { try { localStorage.setItem(CACHE, JSON.stringify(d)); } catch (e) {} };
+
+  async function fetchLive() {
+    const repos = (await gh(`/users/${PROFILE.github}/repos?per_page=100&sort=pushed`))
+      .filter((r) => !r.fork && !excluded.has(r.name.toLowerCase()))
+      .map((r) => ({ name: r.name, description: r.description, language: r.language, pushed_at: r.pushed_at, created_at: r.created_at, html_url: r.html_url, homepage: r.homepage, archived: r.archived }));
+    const batches = await Promise.all(repos.slice(0, 4).map((r) =>
+      gh(`/repos/${PROFILE.github}/${r.name}/commits?per_page=5`).then((cs) => cs.map((c) => ({
+        repo: r.name, sha: c.sha, message: (c.commit.message || "").split("\n")[0],
+        date: c.commit.committer?.date || c.commit.author?.date, url: c.html_url,
+      }))).catch(() => [])));
+    return { t: Date.now(), repos, commits: batches.flat().sort((a, b) => b.date.localeCompare(a.date)) };
+  }
+
+  async function loadLive() {
+    let data = readCache();
+    if (!data || Date.now() - data.t > 3 * 60 * 1000) {
+      try { data = await fetchLive(); writeCache(data); }
+      catch (e) { /* rate limited or offline: fall back to the last good copy below */ }
+    }
+    if (data) {
+      discover(data.repos);
+      renderActivity(data.repos, data.commits);
+      live.synced = data.t; setSync();
+      return;
+    }
+    $("#syncState").textContent = "GitHub is taking a break";
+    $("#feed").innerHTML = `<li class="feed-note">GitHub's public API limit was reached for this network. <a class="link" href="${LINKS.github}" target="_blank" rel="noopener">See my activity on GitHub ${icon("arrowRight")}</a></li>`;
+    $("#ccRepo").textContent = "github.com/AashutoshR";
+    $("#ccMsg").textContent = "See my latest commits on GitHub";
+    $("#ccWhen").textContent = "";
+    $("#bTitle").textContent = "See it on GitHub";
+    $("#bDesc").textContent = "My most recent work is always on my GitHub profile.";
   }
 
   let discovered = false;
   function discover(repos) {
     if (discovered) return;
+    discovered = true;
     const known = new Set(PROJECTS.filter((p) => p.repo).map((p) => p.repo.toLowerCase()));
     const fresh = repos.filter((r) => !known.has(r.name.toLowerCase()) && !r.archived).map((r) => ({
       repo: r.name, title: r.name.replace(/[-_]+/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()),
@@ -303,167 +290,104 @@
       description: r.description || "A brand new project. Details coming soon.",
       tech: [r.language || "Git"], icon: r.language || "Git", demo: safeUrl(r.homepage) || undefined,
     }));
-    discovered = true;
     if (!fresh.length) return;
-    archive = [...fresh, ...archive];
-    renderTabs(); renderRows();
-    if (window.ScrollTrigger) ScrollTrigger.refresh();
+    projects = [...fresh, ...projects];
+    renderTabs(); renderGrid();
   }
 
-  loadSnapshot().then(loadLive);
-  setInterval(() => { if (!document.hidden) loadLive(); }, 90 * 1000);
-  document.addEventListener("visibilitychange", () => { if (!document.hidden && Date.now() - live.synced > 60000) loadLive(); });
-
-  /* ===================== Signal canvas (hero) ===================== */
-  (function signal() {
-    const cv = $(".signal"); const ctx = cv.getContext("2d");
-    const hero = $(".hero");
-    let w = 0, h = 0, dpr = 1, running = false, t0 = performance.now();
+  /* ===================== Hero line animation ===================== */
+  (() => {
+    const cv = $(".waves"), ctx = cv.getContext("2d"), hero = $(".hero");
+    let w = 0, h = 0, running = false, base = "156,163,175", accent = "#06b6d4";
     const mouse = { x: -9999, y: -9999, tx: -9999, ty: -9999 };
-    const LINES = 16;
-    const resize = () => {
-      dpr = Math.min(devicePixelRatio || 1, 2);
-      w = hero.clientWidth; h = hero.clientHeight;
-      cv.width = w * dpr; cv.height = h * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    };
+    const LINES = 14;
+    const colors = () => { const cs = getComputedStyle(root); base = cs.getPropertyValue("--wave").trim() || base; accent = cs.getPropertyValue("--accent").trim() || accent; };
+    const resize = () => { const dpr = Math.min(devicePixelRatio || 1, 2); w = hero.clientWidth; h = hero.clientHeight; cv.width = w * dpr; cv.height = h * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0); };
     const draw = (now) => {
-      const t = (now - t0) / 1000;
-      mouse.x += (mouse.tx - mouse.x) * 0.08; mouse.y += (mouse.ty - mouse.y) * 0.08;
+      const t = now / 1000;
+      mouse.x += (mouse.tx - mouse.x) * 0.07; mouse.y += (mouse.ty - mouse.y) * 0.07;
       ctx.clearRect(0, 0, w, h);
-      const top = h * 0.2, span = h * 0.62;
+      const top = h * 0.28, span = h * 0.6;
       for (let i = 0; i < LINES; i++) {
-        const base = top + (span * i) / (LINES - 1);
-        const hot = i === 9;
+        const y0 = top + (span * i) / (LINES - 1);
+        const hot = i === 8;
         ctx.beginPath();
-        ctx.lineWidth = hot ? 1.4 : 1;
-        ctx.strokeStyle = hot ? "rgba(255,74,28,0.55)" : `rgba(18,18,17,${0.05 + (i % 3) * 0.02})`;
+        ctx.lineWidth = hot ? 1.3 : 1;
+        if (hot) { ctx.strokeStyle = accent; ctx.globalAlpha = 0.45; } else { ctx.strokeStyle = `rgba(${base},${0.07 + (i % 3) * 0.025})`; ctx.globalAlpha = 1; }
         for (let x = -10; x <= w + 10; x += 10) {
-          const nx = x / w;
-          const env = Math.sin(nx * Math.PI) ** 1.5;
-          let y = base
-            + Math.sin(nx * 9 + t * 0.7 + i * 0.45) * 10 * env
-            + Math.sin(nx * 23 - t * 1.1 + i) * 4 * env
-            + Math.sin(nx * 3 + t * 0.3) * 18 * env;
-          const dx = x - mouse.x, dy = base - mouse.y;
-          const d2 = dx * dx + dy * dy;
-          y += Math.exp(-d2 / 14000) * 46 * Math.sin(t * 3 + i * 0.6 + dx * 0.02);
+          const nx = x / w, env = Math.sin(nx * Math.PI) ** 1.4;
+          let y = y0 + Math.sin(nx * 8 + t * 0.6 + i * 0.42) * 9 * env + Math.sin(nx * 21 - t * 0.9 + i) * 3.5 * env + Math.sin(nx * 2.6 + t * 0.25) * 16 * env;
+          const dx = x - mouse.x, dy = y0 - mouse.y;
+          y += Math.exp(-(dx * dx + dy * dy) / 16000) * 40 * Math.sin(t * 2.6 + i * 0.55 + dx * 0.02);
           x === -10 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
         }
         ctx.stroke();
       }
+      ctx.globalAlpha = 1;
       if (running) requestAnimationFrame(draw);
     };
-    resize();
+    colors(); resize();
     addEventListener("resize", resize);
     hero.addEventListener("pointermove", (e) => { const r = hero.getBoundingClientRect(); mouse.tx = e.clientX - r.left; mouse.ty = e.clientY - r.top; });
-    hero.addEventListener("pointerleave", () => { mouse.tx = mouse.ty = -9999; });
-    if (reduce) { draw(performance.now()); return; }
-    new IntersectionObserver(([en]) => {
-      const was = running; running = en.isIntersecting && !document.hidden;
-      if (running && !was) requestAnimationFrame(draw);
-    }).observe(hero);
+    hero.addEventListener("pointerleave", () => (mouse.tx = mouse.ty = -9999));
+    if (reduce) draw(0);
+    else new IntersectionObserver(([en]) => { const was = running; running = en.isIntersecting; if (running && !was) requestAnimationFrame(draw); }).observe(hero);
   })();
 
-  /* ===================== Cursor, magnetic, previews ===================== */
-  if (fine) {
-    root.classList.add("has-cursor");
-    const cur = $(".cursor"), dot = $(".cursor-dot"), ring = $(".cursor-ring"), label = $(".cursor-label");
-    const hp = $(".hover-preview"), hpi = $(".hp-inner");
-    const p = { x: innerWidth / 2, y: innerHeight / 2 }, r = { ...p }, pv = { ...p };
-    addEventListener("pointermove", (e) => { p.x = e.clientX; p.y = e.clientY; cur.classList.remove("is-hidden"); }, { passive: true });
-    document.addEventListener("pointerleave", () => cur.classList.add("is-hidden"));
-    const loop = () => {
-      r.x += (p.x - r.x) * 0.18; r.y += (p.y - r.y) * 0.18;
-      pv.x += (p.x - pv.x) * 0.1; pv.y += (p.y - pv.y) * 0.1;
-      dot.style.transform = `translate(${p.x}px, ${p.y}px) translate(-50%, -50%)`;
-      ring.style.transform = `translate(${r.x}px, ${r.y}px) translate(-50%, -50%)`;
-      hp.style.left = `${pv.x}px`; hp.style.top = `${pv.y}px`;
-      requestAnimationFrame(loop);
-    };
-    loop();
-    document.addEventListener("pointerover", (e) => {
-      const labelled = e.target.closest("[data-cursor]");
-      const link = e.target.closest("a, button");
-      cur.classList.toggle("has-label", !!labelled);
-      cur.classList.toggle("is-link", !!link && !labelled);
-      label.textContent = labelled ? labelled.dataset.cursor : "";
-      const row = e.target.closest(".row-head");
-      if (row && !row.parentElement.classList.contains("open")) {
-        const proj = archive[+row.parentElement.dataset.i];
-        if (proj && hp.dataset.for !== proj.title) { hpi.innerHTML = art(proj); hp.dataset.for = proj.title; }
-        hp.classList.add("on");
-      } else hp.classList.remove("on");
-    });
+  /* ===================== Reveal + counters ===================== */
+  const countUp = (el) => {
+    const to = +el.dataset.to;
+    if (reduce) return;
+    const t0 = performance.now(), dur = 1400;
+    const step = (t) => { const p = Math.min(1, (t - t0) / dur); el.textContent = Math.round(to * (1 - (1 - p) ** 4)).toLocaleString("en-GB"); if (p < 1) requestAnimationFrame(step); };
+    requestAnimationFrame(step);
+  };
+  const io = new IntersectionObserver((ens) => ens.forEach((en) => {
+    if (!en.isIntersecting) return;
+    en.target.classList.add("in");
+    $$(".num", en.target).forEach(countUp);
+    io.unobserve(en.target);
+  }), { threshold: 0.12, rootMargin: "0px 0px -30px 0px" });
+  function observe(r = document) { $$(".rv:not(.in)", r).forEach((el) => io.observe(el)); }
 
-    // magnetic
-    $$(".magnetic").forEach((el) => {
-      const strength = el.classList.contains("badge-spin") ? 0.35 : 0.28;
-      el.addEventListener("pointermove", (e) => {
-        const b = el.getBoundingClientRect();
-        const x = (e.clientX - b.left - b.width / 2) * strength, y = (e.clientY - b.top - b.height / 2) * strength;
-        el.style.transform = `translate(${x}px, ${y}px)`;
-      });
-      el.addEventListener("pointerleave", () => { el.style.transition = "transform .6s cubic-bezier(.22,1,.36,1)"; el.style.transform = ""; setTimeout(() => (el.style.transition = ""), 600); });
-    });
-
-    // portrait tilt
-    const por = $(".portrait");
-    por.addEventListener("pointermove", (e) => {
-      const b = por.getBoundingClientRect();
-      const rx = ((e.clientY - b.top) / b.height - 0.5) * -10, ry = ((e.clientX - b.left) / b.width - 0.5) * 12;
-      por.style.transform = `perspective(700px) rotateX(${rx}deg) rotateY(${ry}deg)`;
-    });
-    por.addEventListener("pointerleave", () => (por.style.transform = ""));
-  }
-
-  /* ===================== Header + menu ===================== */
+  /* ===================== Header, nav, sheet ===================== */
   const header = $(".header");
-  const darkZones = () => $$(".work, .contact");
-  let lastY = scrollY;
+  const navLinks = $$('.nav a[href^="#"]');
+  const sections = navLinks.map((a) => $(a.getAttribute("href")));
   const onScroll = () => {
-    const y = scrollY;
-    header.classList.toggle("scrolled", y > 30);
-    const menuOpen = $(".menu").classList.contains("open");
-    header.classList.toggle("hide", !menuOpen && y > 700 && y > lastY + 2);
-    if (y < lastY - 2) header.classList.remove("hide");
-    lastY = y;
-    const probe = 40;
-    const dark = menuOpen || darkZones().some((z) => { const b = z.getBoundingClientRect(); return b.top <= probe && b.bottom >= probe; });
-    header.classList.toggle("on-dark", dark);
-    $(".progress span").style.transform = `scaleX(${Math.min(1, y / Math.max(1, document.documentElement.scrollHeight - innerHeight))})`;
+    header.classList.toggle("scrolled", scrollY > 10);
+    const y = scrollY + innerHeight * 0.3;
+    let cur = null;
+    sections.forEach((s) => { if (s && s.offsetTop <= y) cur = s; });
+    navLinks.forEach((a) => a.classList.toggle("active", cur && a.getAttribute("href") === `#${cur.id}`));
   };
   addEventListener("scroll", onScroll, { passive: true });
-  onScroll();
 
-  const menu = $(".menu"), menuBtn = $(".menu-btn");
-  const setMenu = (open) => {
+  const sheet = $("#sheet"), menuBtn = $(".menu-btn");
+  function setSheet(open) {
+    sheet.classList.toggle("open", open);
     menuBtn.setAttribute("aria-expanded", open);
-    $("b", menuBtn).textContent = open ? "Close" : "Menu";
-    if (open) { menu.hidden = false; requestAnimationFrame(() => menu.classList.add("open")); lenis && lenis.stop(); }
-    else { menu.classList.remove("open"); setTimeout(() => { if (!menu.classList.contains("open")) menu.hidden = true; }, 800); lenis && lenis.start(); }
-    onScroll();
-  };
-  menuBtn.addEventListener("click", () => setMenu(menuBtn.getAttribute("aria-expanded") !== "true"));
-  $$(".menu a[href^='#']").forEach((a) => a.addEventListener("click", () => setMenu(false)));
+    menuBtn.innerHTML = icon(open ? "x" : "menu");
+    if (open) header.classList.add("scrolled"); else onScroll();
+  }
+  menuBtn.addEventListener("click", () => setSheet(!sheet.classList.contains("open")));
+  $$("#sheet a").forEach((a) => a.addEventListener("click", () => setSheet(false)));
 
-  /* ===================== Copy email ===================== */
+  /* ===================== Clock + copy ===================== */
+  const fmt = new Intl.DateTimeFormat("en-GB", { timeZone: PROFILE.timezone || "Europe/London", hour: "2-digit", minute: "2-digit" });
+  const tick = () => ($("#clock").textContent = fmt.format(new Date()));
+  tick(); setInterval(tick, 15000);
   const toast = (m) => { const t = $("#toast"); t.textContent = m; t.classList.add("show"); clearTimeout(toast.h); toast.h = setTimeout(() => t.classList.remove("show"), 1800); };
   $("#copyEmail").addEventListener("click", async () => {
-    try { await navigator.clipboard.writeText(PROFILE.email); toast("Email copied. Talk soon."); } catch (e) { toast(PROFILE.email); }
+    try { await navigator.clipboard.writeText(PROFILE.email); toast("Email copied"); } catch (e) { toast(PROFILE.email); }
   });
 
   /* ===================== Smooth scroll ===================== */
   let lenis = null;
-  if (motion && window.Lenis) {
-    lenis = new Lenis({ lerp: 0.09, smoothWheel: true });
-    lenis.on("scroll", ScrollTrigger.update);
-    gsap.ticker.add((t) => lenis.raf(t * 1000));
-    gsap.ticker.lagSmoothing(0);
-    // marquee reacts to scroll speed
-    const anims = () => $$(".band-track").map((el) => el.getAnimations()[0]).filter(Boolean);
-    let boost = 0;
-    lenis.on("scroll", (l) => { boost = Math.min(5, Math.abs(l.velocity) / 6); });
-    gsap.ticker.add(() => { boost *= 0.92; anims().forEach((a) => (a.playbackRate = 1 + boost)); });
+  if (!reduce && window.Lenis) {
+    lenis = new Lenis({ lerp: 0.1, smoothWheel: true });
+    const raf = (t) => { lenis.raf(t); requestAnimationFrame(raf); };
+    requestAnimationFrame(raf);
   }
   document.addEventListener("click", (e) => {
     const a = e.target.closest('a[href^="#"]');
@@ -472,106 +396,15 @@
     const target = id === "#top" ? 0 : $(id);
     if (target === null) return;
     e.preventDefault();
-    const behavior = reduce ? "auto" : "smooth";
-    if (lenis) lenis.scrollTo(target, { duration: 1.5 });
-    else if (target === 0) scrollTo({ top: 0, behavior });
-    else target.scrollIntoView({ behavior });
+    if (lenis) lenis.scrollTo(target, { offset: id === "#top" ? 0 : -70, duration: 1.2 });
+    else if (target === 0) scrollTo({ top: 0, behavior: reduce ? "auto" : "smooth" });
+    else target.scrollIntoView({ behavior: reduce ? "auto" : "smooth" });
   });
 
-  /* ===================== Motion ===================== */
-  const loader = $(".loader");
-  if (!motion) { loader.style.display = "none"; return; }
-
-  gsap.registerPlugin(ScrollTrigger);
-  if (window.SplitText) gsap.registerPlugin(SplitText);
-
-  const heroIn = () => {
-    const tl = gsap.timeline({ defaults: { ease: "expo.out" } });
-    tl.from(".hero-title .word", { yPercent: 110, duration: 1.4, stagger: 0.12 })
-      .from(".portrait", { clipPath: "inset(100% 0% 0% 0%)", duration: 1.4 }, 0.15)
-      .from(".portrait img", { scale: 1.5, duration: 1.8 }, 0.15)
-      .from(".hero-top > *, .hero-bottom > *", { y: 30, opacity: 0, duration: 1.1, stagger: 0.08, clearProps: "transform,opacity" }, 0.5)
-      .from(".header", { y: -30, opacity: 0, duration: 1, clearProps: "transform,opacity" }, 0.5)
-      .from(".signal", { opacity: 0, duration: 2 }, 0.3);
-    return tl;
-  };
-
-  const seen = (() => { try { return sessionStorage.getItem("seen-intro"); } catch (e) { return null; } })();
-  gsap.set(".hero-title .word", { yPercent: 110 });
-  if (seen) { gsap.set(".hero-title .word", { yPercent: 0 }); heroIn(); }
-  else {
-    lenis && lenis.stop();
-    const count = { v: 0 };
-    const tl = gsap.timeline();
-    tl.from(".loader-name > *", { yPercent: 100, opacity: 0, duration: 1, stagger: 0.12, ease: "expo.out" })
-      .to(count, { v: 100, duration: 1.6, ease: "power2.inOut", onUpdate: () => ($("#loaderCount").textContent = String(Math.round(count.v)).padStart(3, "0")) }, 0)
-      .to(".loader-bar span", { scaleX: 1, duration: 1.6, ease: "power2.inOut" }, 0)
-      .to(".loader-name, .loader-count, .loader-meta", { yPercent: -30, opacity: 0, duration: 0.6, ease: "power3.in" }, "+=0.1")
-      .to(loader, { clipPath: "inset(0 0 100% 0)", duration: 1.1, ease: "expo.inOut" }, "-=0.25")
-      .add(() => { gsap.set(".hero-title .word", { yPercent: 0 }); heroIn(); }, "-=0.55")
-      .add(() => { loader.style.display = "none"; lenis && lenis.start(); try { sessionStorage.setItem("seen-intro", "1"); } catch (e) {} });
-    gsap.set(loader, { clipPath: "inset(0 0 0% 0)", animation: "none" });
-  }
-
-  // Hero parallax on scroll
-  gsap.to(".hero-title", { yPercent: -18, ease: "none", scrollTrigger: { trigger: ".hero", start: "top top", end: "bottom top", scrub: true } });
-  gsap.to(".portrait img", { yPercent: 12, ease: "none", scrollTrigger: { trigger: ".hero", start: "top top", end: "bottom top", scrub: true } });
-  gsap.to(".badge-spin svg", { rotate: 360, ease: "none", scrollTrigger: { trigger: document.body, start: "top top", end: "bottom bottom", scrub: 1 } });
-
-  document.fonts.ready.then(() => {
-    // Headings: line mask reveal
-    if (window.SplitText) {
-      $$(".display, .contact-title .ct-line, .sc-title").forEach((el) => {
-        const split = SplitText.create(el, { type: "lines", mask: "lines", linesClass: "ln" });
-        gsap.from(split.lines, { yPercent: 105, duration: 1.2, stagger: 0.1, ease: "expo.out", scrollTrigger: { trigger: el, start: "top 88%" } });
-      });
-    }
-
-    // Statement words light up while scrolling
-    gsap.to(".statement-text .w", { opacity: 1, stagger: 0.08, ease: "none", scrollTrigger: { trigger: ".statement-text", start: "top 78%", end: "bottom 40%", scrub: 0.6 } });
-
-    // Facts count up
-    $$(".fact .count").forEach((el) => {
-      const to = +el.dataset.to, o = { v: 0 };
-      el.textContent = "0";
-      gsap.to(o, { v: to, duration: 2, ease: "power3.out", onUpdate: () => (el.textContent = Math.round(o.v).toLocaleString("en-GB")), scrollTrigger: { trigger: el, start: "top 90%", once: true } });
-    });
-    gsap.from(".fact, .about-text p, .about-card", { y: 40, opacity: 0, duration: 1.1, stagger: 0.08, ease: "expo.out", scrollTrigger: { trigger: ".facts", start: "top 85%" } });
-
-    // Bands slide in
-    gsap.from(".band-a", { xPercent: -15, ease: "none", scrollTrigger: { trigger: ".bands", start: "top bottom", end: "bottom top", scrub: true } });
-    gsap.from(".band-b", { xPercent: 15, ease: "none", scrollTrigger: { trigger: ".bands", start: "top bottom", end: "bottom top", scrub: true } });
-
-    // Work section rises in
-    gsap.from(".work", { borderRadius: "120px 120px 0 0", ease: "none", scrollTrigger: { trigger: ".work", start: "top bottom", end: "top 20%", scrub: true } });
-
-    const mm = gsap.matchMedia();
-    mm.add("(min-width: 901px)", () => {
-      const cards = $$(".shot-card");
-      cards.forEach((card, i) => {
-        const img = $(".sc-img img", card);
-        gsap.fromTo(img, { yPercent: 0 }, { yPercent: -14, ease: "none", scrollTrigger: { trigger: card, start: "top 90%", end: "bottom top", scrub: true } });
-        if (i < cards.length - 1) {
-          gsap.to(card, { scale: 0.9, filter: "brightness(0.5)", ease: "none", scrollTrigger: { trigger: cards[i + 1], start: "top bottom", end: "top 88px", scrub: true } });
-        }
-      });
-    });
-    mm.add("(max-width: 900px)", () => {
-      $$(".shot-card").forEach((card) => gsap.from(card, { y: 60, opacity: 0, duration: 1, ease: "expo.out", scrollTrigger: { trigger: card, start: "top 88%" } }));
-    });
-
-    // Live + experience + toolbox
-    gsap.from(".panel", { y: 50, opacity: 0, duration: 1.2, stagger: 0.12, ease: "expo.out", scrollTrigger: { trigger: ".live-grid", start: "top 85%" } });
-    gsap.to(".exp-progress span", { scaleX: 1, ease: "none", scrollTrigger: { trigger: "#expList", start: "top 70%", end: "bottom 70%", scrub: true } });
-    $$(".exp-item").forEach((it) => gsap.from(it.children, { y: 30, opacity: 0, duration: 1, stagger: 0.06, ease: "expo.out", scrollTrigger: { trigger: it, start: "top 85%" } }));
-    gsap.from(".tool-cat", { y: 40, opacity: 0, duration: 1, stagger: 0.07, ease: "expo.out", scrollTrigger: { trigger: ".tool-grid", start: "top 85%" } });
-    gsap.from(".tool-cat li", { x: -16, opacity: 0, duration: 0.8, stagger: 0.012, ease: "power3.out", scrollTrigger: { trigger: ".tool-grid", start: "top 80%" } });
-
-    // Contact
-    gsap.from(".contact-row, .contact-grid > div", { y: 30, opacity: 0, duration: 1, stagger: 0.08, ease: "expo.out", scrollTrigger: { trigger: ".contact-row", start: "top 92%" } });
-    gsap.fromTo(".giant", { xPercent: 12 }, { xPercent: -8, ease: "none", scrollTrigger: { trigger: ".contact", start: "top bottom", end: "bottom bottom", scrub: true } });
-
-    ScrollTrigger.refresh();
-  });
-  addEventListener("load", () => ScrollTrigger.refresh());
+  /* ===================== Boot ===================== */
+  renderTabs(); renderGrid();
+  observe(); onScroll();
+  requestAnimationFrame(() => $$(".hero .rv").forEach((el) => el.classList.add("in")));
+  loadLive();
+  setInterval(() => { if (!document.hidden) loadLive(); }, 120 * 1000);
 })();

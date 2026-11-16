@@ -6,22 +6,18 @@ Personal portfolio of **Aashutosh Rawate**, software engineer (backend, distribu
 
 ## Design
 
-Paper and ink with one signal colour (vermilion). Instrument Serif for display type, Geist for text, Geist Mono for labels.
+Dark palette built on the 60-30-10 rule: obsidian canvas (`#0D0F12`), charcoal surfaces (`#181B20`), snow and silver text (`#F3F4F6`, `#9CA3AF`), and cyan (`#06B6D4`) used only for buttons, links and highlights. Geist and Geist Mono throughout.
 
-- Intro counter that plays once per visit, then a hero with an animated signal waveform that reacts to the cursor
-- Crossing marquee bands that speed up with scroll velocity
-- A statement that lights up word by word as you scroll
-- Six featured projects as stacked, sticky showcase cards with real screenshots
-- An archive list with category filters, cursor-following previews and expandable details
-- Custom cursor, magnetic buttons, smooth inertial scrolling (Lenis), GSAP scroll animations
-- Respects `prefers-reduced-motion`, works on phones, and stays readable if the CDN scripts fail
+- Hero with a cursor-reactive line animation, a cut-out portrait and a live "Latest commit" card
+- All projects in one filterable grid; clicking a card opens a details panel with screenshot, key result, full stack and links
+- Experience timeline, skills with technology logos, education, and icon contact cards
+- Smooth scrolling (Lenis), gentle reveal-on-scroll, `prefers-reduced-motion` support, works on phones
+
+Alternative palettes (dark + emerald, dark + violet, clean + cobalt, clean + sage) are already defined in `assets/css/site.css`. To switch, change `data-palette` on the `<html>` tag in `index.html`.
 
 ## Live GitHub activity
 
-Two layers keep the site current without a rebuild:
-
-1. **In the browser, on every visit:** the page reads the GitHub REST API for the most recently pushed public repos and their latest commits. The hero line "Right now on GitHub" and the commit feed update immediately after you push, and refresh every 90 seconds while the page is open. New public repos appear in the archive with a "New" badge.
-2. **GitHub Action every 30 minutes:** [`.github/workflows/github-data.yml`](.github/workflows/github-data.yml) runs [`fetch-github.mjs`](.github/scripts/fetch-github.mjs), which saves the contribution calendar and recent commits to `data/github.json`. This powers the heatmap and is the fallback when the API rate limit is hit. It only commits when the data changed, and only reads public repositories.
+On every visit the page reads the GitHub REST API for your most recently pushed public repos and their latest commits. It powers the "Latest commit" card, "Currently building" and the commit feed, and refreshes every two minutes while the page is open. Results are cached for three minutes per visitor so reloads stay within GitHub's anonymous limit of 60 requests an hour. New public repos appear in the projects grid automatically with a "New" badge. Only public repositories are read.
 
 ## Editing content
 
@@ -29,15 +25,15 @@ Everything lives in [`assets/js/data.js`](assets/js/data.js):
 
 | Section | Variable |
 | --- | --- |
-| Name, intro, statement, stats, links | `PROFILE` |
+| Name, about text, stats, links | `PROFILE` |
 | Jobs | `EXPERIENCE` |
 | Degrees | `EDUCATION` |
-| Toolbox | `SKILLS` |
-| Projects (`featured: true` + `shot` = showcase card) | `PROJECTS` |
+| Skills | `SKILLS` |
+| Projects (order = display order; add `shot` for a screenshot cover) | `PROJECTS` |
 | Repos to hide | `EXCLUDE` |
 | Technology icons | `TECH` |
 
-Screenshots go in `assets/img/work/`. Replace `assets/img/aashutosh.jpg` to change the portrait and `assets/Aashutosh_Rawate_CV.pdf` to change the resume.
+Screenshots go in `assets/img/work/`. The portrait is `assets/img/aashutosh-cutout.webp` (background removed with rembg). Replace `assets/Aashutosh_Rawate_CV.pdf` to update the resume.
 
 ## Run locally
 
@@ -49,4 +45,4 @@ Then open http://localhost:5544.
 
 ## Credits
 
-Tech logos from [Devicon](https://devicon.dev) and [Simple Icons](https://simpleicons.org). Animation by [GSAP](https://gsap.com) and [Lenis](https://lenis.darkroom.engineering).
+Tech logos from [Devicon](https://devicon.dev) and [Simple Icons](https://simpleicons.org). UI icons from [Lucide](https://lucide.dev). Smooth scrolling by [Lenis](https://lenis.darkroom.engineering).
