@@ -119,6 +119,11 @@ const PROFILE = {
     "Software engineer who builds backend systems that stay up under load, and machine learning that shows its work.",
   statement:
     "I build software people can rely on: interfaces that feel fast, services that hold up under real traffic, and models whose results you can trace back to the data.",
+  email: "enaashutoshrawate1999@gmail.com",
+  linkedin: "https://www.linkedin.com/in/aashutosh-rawate-2494721b6/",
+  resume: "assets/Aashutosh_Rawate_CV.pdf",
+  summary:
+    "Full stack, machine learning and AI engineer with 3+ years in production, including a monolith-to-microservices migration serving 8,000+ daily users. M.Sc. Data Science (Merit), University of Glasgow.",
   about: [
     "I like systems you can trust under load. At Wipro I broke a legacy PHP monolith into NestJS microservices for 8,000+ daily users, owning the API design, Redis caching, Kafka event pipeline, Elasticsearch search and the CI/CD that took deployments from about two hours to under ten minutes.",
     "Before that I built backend services for a high-volume credit card platform on Spring Boot and Spring Cloud, and delivered a full-stack Angular and Node.js insurance portal on Kubernetes.",
