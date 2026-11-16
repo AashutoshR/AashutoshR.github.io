@@ -118,12 +118,7 @@ const PROFILE = {
   intro:
     "Software engineer who builds backend systems that stay up under load, and machine learning that shows its work.",
   statement:
-    "I care about software you can trust at 2am: services that keep their promises under load, pipelines that deploy in minutes, and models that can explain where every number came from.",
-  email: "enaashutoshrawate1999@gmail.com",
-  linkedin: "https://www.linkedin.com/in/aashutosh-rawate-2494721b6/",
-  resume: "assets/Aashutosh_Rawate_CV.pdf",
-  summary:
-    "Software engineer with 3+ years building and operating resilient, high-availability services, including a monolith-to-microservices migration serving 8,000+ daily users. I work across Java (Spring Boot), Node.js/NestJS and Python, and I build ML systems from the GPU kernels up. M.Sc. Data Science (Merit), University of Glasgow.",
+    "I build software people can rely on: interfaces that feel fast, services that hold up under real traffic, and models whose results you can trace back to the data.",
   about: [
     "I like systems you can trust under load. At Wipro I broke a legacy PHP monolith into NestJS microservices for 8,000+ daily users, owning the API design, Redis caching, Kafka event pipeline, Elasticsearch search and the CI/CD that took deployments from about two hours to under ten minutes.",
     "Before that I built backend services for a high-volume credit card platform on Spring Boot and Spring Cloud, and delivered a full-stack Angular and Node.js insurance portal on Kubernetes.",
@@ -218,6 +213,8 @@ const SKILLS = [
 const PROJECTS = [
   {
     repo: "inference-engine",
+    domain: "LLM Inference",
+    group: "llm",
     shot: "assets/img/work/inference-engine.png",
     year: 2026,
     icon: "CUDA",
@@ -232,6 +229,8 @@ const PROJECTS = [
   },
   {
     repo: "ledgerflow",
+    domain: "Fintech Microservices",
+    group: "backend",
     shot: "assets/img/work/ledgerflow.png",
     year: 2026,
     icon: "Spring Boot",
@@ -247,6 +246,8 @@ const PROJECTS = [
   },
   {
     repo: "mags",
+    domain: "Search & Discovery",
+    group: "backend",
     shot: "assets/img/work/mags.jpg",
     year: 2026,
     icon: "React",
@@ -263,6 +264,8 @@ const PROJECTS = [
   },
   {
     repo: "rag-financial",
+    domain: "Financial RAG",
+    group: "llm",
     shot: "assets/img/work/rag-financial.png",
     year: 2026,
     icon: "Claude",
@@ -277,6 +280,8 @@ const PROJECTS = [
   },
   {
     repo: "LocalVoice",
+    domain: "Speech Recognition",
+    group: "vision",
     shot: "assets/img/work/localvoice.png",
     year: 2026,
     icon: "Hugging Face",
@@ -291,6 +296,8 @@ const PROJECTS = [
   },
   {
     repo: "docqa-rag",
+    domain: "Document Q&A (RAG)",
+    group: "llm",
     shot: "assets/img/work/docqa.jpg",
     year: 2026,
     icon: "LangChain",
@@ -305,6 +312,8 @@ const PROJECTS = [
   },
   {
     repo: "deepfake-detector",
+    domain: "Deepfake Detection",
+    group: "vision",
     year: 2026,
     icon: "PyTorch",
     title: "Deepfake Detector",
@@ -317,6 +326,8 @@ const PROJECTS = [
   },
   {
     repo: "nutrilens",
+    domain: "Food Recognition",
+    group: "vision",
     year: 2026,
     icon: "FastAPI",
     title: "NutriLens",
@@ -329,6 +340,8 @@ const PROJECTS = [
   },
   {
     repo: "docweave",
+    domain: "Documentation Tooling",
+    group: "tools",
     year: 2026,
     icon: "Git",
     title: "DocWeave",
@@ -341,6 +354,8 @@ const PROJECTS = [
   },
   {
     repo: "lenslore",
+    domain: "Vision-Language Chat",
+    group: "vision",
     year: 2026,
     icon: "Streamlit",
     title: "LensLore",
@@ -353,6 +368,8 @@ const PROJECTS = [
   },
   {
     title: "Near-RT RIC Malicious Traffic Detection",
+    domain: "5G Network Security",
+    group: "data",
     year: 2025,
     icon: "TensorFlow",
     tagline: "O-RAN research",
@@ -364,6 +381,8 @@ const PROJECTS = [
   },
   {
     repo: "CloudComputinginZARR",
+    domain: "Cloud Data Layouts",
+    group: "data",
     year: 2025,
     icon: "Dask",
     title: "Cloud-Native Data Layouts",
@@ -376,6 +395,8 @@ const PROJECTS = [
   },
   {
     repo: "BigDataApache",
+    domain: "Distributed Analytics",
+    group: "data",
     year: 2025,
     icon: "Apache Spark",
     title: "Financial Asset Recommender",
@@ -388,6 +409,8 @@ const PROJECTS = [
   },
   {
     repo: "vantage",
+    domain: "Linux Systems",
+    group: "tools",
     year: 2026,
     icon: "Linux",
     title: "Vantage for Linux",
@@ -400,6 +423,8 @@ const PROJECTS = [
   },
   {
     repo: "Reddit-Data-Analysis",
+    domain: "NLP Analytics",
+    group: "data",
     year: 2025,
     icon: "Jupyter",
     title: "Reddit Data Analysis",
@@ -412,6 +437,8 @@ const PROJECTS = [
   },
   {
     repo: "CarCompany",
+    domain: "Web Development",
+    group: "backend",
     year: 2020,
     icon: "PHP",
     title: "Car Company Website",
@@ -423,6 +450,15 @@ const PROJECTS = [
     tech: ["HTML", "CSS", "JavaScript", "PHP", "MySQL"],
   },
 ];
+
+/* Filter groups for the projects grid. Each project has a specific `domain` label and one `group`. */
+const GROUPS = {
+  llm: { label: "LLMs & Retrieval", color: "cyan" },
+  vision: { label: "Vision & Speech", color: "violet" },
+  backend: { label: "Backend & Full Stack", color: "emerald" },
+  data: { label: "Data & ML Research", color: "cyan" },
+  tools: { label: "Developer Tools", color: "violet" },
+};
 
 /* Repos never shown, even when discovered from the API. */
 const EXCLUDE = ["LeetCode", "AashutoshR.github.io", "AashutoshR"];
